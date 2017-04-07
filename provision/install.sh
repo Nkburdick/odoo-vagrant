@@ -44,7 +44,7 @@ WKHTMLTOX_X32=http://download.gna.org/wkhtmltopdf/0.12/0.12.1/wkhtmltox-0.12.1_l
 #--------------------------------------------------
 echo -e "\n---- Update Server ----"
 sudo apt-get update
-sudo apt-get upgrade -y
+# sudo apt-get upgrade -y
 
 #--------------------------------------------------
 # Install PostgreSQL Server
@@ -91,31 +91,32 @@ else
   echo "Wkhtmltopdf isn't installed due to the choice of the user!"
 fi
 	
-echo -e "\n---- Create ODOO system user ----"
+echo -e "\n---- Create ODOO Vagrant user folder ----"
 # sudo adduser --system --quiet --shell=/bin/bash --home=$OE_HOME --gecos 'ODOO' --group $OE_USER
 #The user should also be added to the sudo'ers group.
 # sudo adduser $OE_USER sudo
+mkdir $OE_HOME
 
 echo -e "\n---- Create Log directory ----"
-sudo mkdir $OE_HOME/log/
-sudo chown $OE_USER:$OE_USER $OE_HOME/log/
+mkdir $OE_HOME/log/
+chown $OE_USER:$OE_USER $OE_HOME/log/
 
 #--------------------------------------------------
 # Install ODOO
 #--------------------------------------------------
 echo -e "\n==== Installing ODOO Server ===="
-sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
+git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
 echo -e "\n---- Create custom module directory ----"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+mkdir $OE_HOME/custom
+mkdir $OE_HOME/custom/addons
 
 echo -e "\n---- Setting permissions on home folder ----"
-sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
+chown -R $OE_USER:$OE_USER $OE_HOME/*
 
 echo -e "* Create server config file"
-sudo su $OE_USER -c "mkdir $OE_HOME/config"
-sudo cp $OE_HOME_EXT/debian/openerp-server.conf $OE_HOME/config/${OE_CONFIG}.conf
+mkdir $OE_HOME/config
+cp $OE_HOME_EXT/debian/openerp-server.conf $OE_HOME/config/${OE_CONFIG}.conf
 sudo chown $OE_USER:$OE_USER $OE_HOME/config/${OE_CONFIG}.conf
 sudo chmod 640 $OE_HOME/config/${OE_CONFIG}.conf
 
